@@ -38,7 +38,7 @@ class Expression:
 
 class Terminal(Expression):
     
-    priority=5
+    priority = 5
     
     def __init__(self, operand):
         self.operand = operand
