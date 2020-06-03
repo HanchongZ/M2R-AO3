@@ -27,10 +27,8 @@ class Expression:
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = ','.join(repr(x) for x in self.operand))
 
-    #this is going to return what human wants to read
     def __str__(self):
-        return self.math #mathematical expressions should be defined in each class
-
+        pass
 
 class Terminal(Expression):
     pass
@@ -39,12 +37,12 @@ class Operator(Expression):
     pass
 
 class Symbol(Terminal):
+
     def __init__(self, operand):
         self.operand = operand
         self.math='{a}'.format(a = operand)
         print('symbol has been involked')
 
-    #magic method for repr
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
 
@@ -54,38 +52,44 @@ class Binary(Operator):
 
 class Add(Binary):
 
+    symbol='+'
+    priority=1
+
     def __init__(self, *operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math='{a} + {b}'.format(a = self.operand[0], b = self.operand[1])
+
 
 class Sub(Binary):
 
+    symbol='-'
+    priority=1
+
     def __init__(self, *operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '{a} - {b}'.format(a = self.operand[0], b = self.operand[1])
 
 class Mul(Binary):
 
+    symbol='*'
+    priority=2
+
     def __init__(self, *operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '{a} * {b}'.format(a = self.operand[0], b = self.operand[1])
 
 class Div(Binary):
 
+    symbol='/'
+    priority=2
+
     def __init__(self, *operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '{a} / {b}'.format(a = self.operand[0], b = self.operand[1])
 
 class Pow(Binary):
 
+    symbol='**'
+    priority=3
+
     def __init__(self, *operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '{a} ** {b}'.format(a = self.operand[0], b = self.operand[1])
 
 class Unary(Operator):
 
@@ -94,14 +98,17 @@ class Unary(Operator):
 
 class UAdd(Unary):
 
+    symbol='+'
+    priority=4
+
     def __init__(self, operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '+ {a}'.format(a = self.operand)
 
 class USub(Unary):
 
+    symbol='-'
+    priority=4
+
     def __init__(self, operand):
         self.operand = operand
-        #define the mathematical expression
-        self.math = '- {a}'.format(a = self.operand)
+
