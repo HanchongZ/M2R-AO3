@@ -34,7 +34,13 @@ class Expression:
 class Terminal(Expression):
     
     priority=5
+    
+    def __init__(self, operand):
+        self.operand = operand
 
+    def __repr__(self):
+        return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
+    
     def __str__(self):
         return '{a}'.format(a=self.operand)
 
@@ -43,14 +49,10 @@ class Operator(Expression):
     pass
 
 class Symbol(Terminal):
+    pass
 
-
-    def __init__(self, operand):
-        self.operand = operand
-
-    def __repr__(self):
-        return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
-
+class Number(Terminal):
+    pass
 
 class Binary(Operator):
     def __str__(self):
