@@ -3,7 +3,6 @@ class Expression:
     def __init__(self, *operand):
         self.operand = operand
 
-
     def __add__(self, other):
         return Add(self, other)
 
@@ -31,18 +30,25 @@ class Expression:
     def __str__(self):
         pass
 
+    def diff(self, var):
+        if self == var:
+            return Number('1')
+	else:
+	    return Number('0')
+
 class Terminal(Expression):
     
     priority=5
     
     def __init__(self, operand):
         self.operand = operand
+        self.depth = 0 #initialize depth
 
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
     
     def __str__(self):
-        return '{a}'.format(a=self.operand)
+        return '{a}'.format(a = self.operand)
 
 
 class Operator(Expression):    
@@ -56,53 +62,66 @@ class Number(Terminal):
 
 class Binary(Operator):
     def __str__(self):
-        temp=[]
+        temp = []
         for a in self.operand:
             #if the operand inside has less priority add brackets
             if self.priority >= a.priority:
-                a='({})'.format(a)
+                a = '({})'.format(a)
             else:
-                a='{}'.format(a)
+                a = '{}'.format(a)
             temp.append(a)
-        return self.symbol.join( x for x in temp)
+        return self.symbol.join(x for x in temp)
 
 class Add(Binary):
 
-    symbol='+'
-    priority=1
+    symbol = '+'
+    priority = 1
 
     def __init__(self, *operand):
         self.operand = operand
+        self.depth = max(a.depth for a in operand) + 1
 
+    def diff(self, var):
+	if not isinstance(self.operand[0], Number):
+	    a = visited['{h}'.format(h = repr(self.operand[0]))]
+        else:
+	    a = self.operand[0]
+        if not isinstance(self.operand[1], Number):
+            b = visited['{k}'.format(k = repr(self.operand[1]))]
+        else:
+            b = self.operand[1]
+        if repr(a + b) not in visited:
+	    visited[repr(self.operand[0] + self.operand[1])] = a + b
+        return a + b
 
 class Sub(Binary):
 
-    symbol='-'
-    priority=1
+    symbol = '-'
+    priority = 1
 
     def __init__(self, *operand):
         self.operand = operand
 
 class Mul(Binary):
 
-    symbol='*'
-    priority=2
+    symbol = '*'
+    priority = 2
 
     def __init__(self, *operand):
         self.operand = operand
 
 class Div(Binary):
 
-    symbol='/'
-    priority=2
+    symbol = '/'
+    priority = 2
 
     def __init__(self, *operand):
         self.operand = operand
 
 class Pow(Binary):
 
-    symbol='**'
-    priority=3
+    symbol = '**'
+    priority = 3
 
     def __init__(self, *operand):
         self.operand = operand
@@ -113,22 +132,47 @@ class Unary(Operator):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
 
     def __str__(self):
-        return self.symbol+'{}'.format(self.operand)
+        return self.symbol + '{}'.format(self.operand)
 
 class UAdd(Unary):
 
-    symbol='+'
-    priority=0
+    symbol = '+'
+    priority = 0
 
     def __init__(self, operand):
         self.operand = operand
 
 class USub(Unary):
 
-    symbol='-'
-    priority=0
+    symbol = '-'
+    priority = 0
 
     def __init__(self, operand):
         self.operand = operand
 
+#initialize the dictionary visited
+visited = {}
 
+def derivative(e, var):
+    #initialization
+    stack = [e]
+
+    while stack != []:
+        temp = stack.pop()
+        if temp not in visited:
+
+            if type(temp) != Symbol and type(temp) != Number:
+                visited[repr(temp)] = temp
+                for a in range(len(temp.operand)):
+                    stack.append(temp.operand[a])
+            else:
+                visited[repr(temp)] = Terminal.diff(temp, var)
+  
+    for a in range(e.depth):
+        temp = {k:visited[k] for k in dict.keys(visited)}
+        keys = dict.keys(temp)
+        for t in keys:
+            if not isinstance(visited[t], Number):
+                visited[t] = visited[t].diff(var)
+
+    print(visited[repr(e)]) 
