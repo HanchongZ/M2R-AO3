@@ -3,6 +3,7 @@ class Expression:
     def __init__(self, *operand):
         self.operand = operand
 
+
     def __add__(self, other):
         return Add(self, other)
 
@@ -115,7 +116,7 @@ class Unary(Operator):
 class UAdd(Unary):
 
     symbol='+'
-    priority=4
+    priority=0
 
     def __init__(self, operand):
         self.operand = operand
@@ -123,7 +124,7 @@ class UAdd(Unary):
 class USub(Unary):
 
     symbol='-'
-    priority=4
+    priority=0
 
     def __init__(self, operand):
         self.operand = operand
