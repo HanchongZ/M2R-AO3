@@ -31,24 +31,37 @@ class Expression:
         pass
 
 class Terminal(Expression):
-    pass
+    
+    priority=5
 
-class Operator(Expression):
+    def __str__(self):
+        return '{a}'.format(a=self.operand)
+
+
+class Operator(Expression):    
     pass
 
 class Symbol(Terminal):
 
+
     def __init__(self, operand):
         self.operand = operand
-        self.math='{a}'.format(a = operand)
-        print('symbol has been involked')
 
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
 
 
 class Binary(Operator):
-    pass
+    def __str__(self):
+        temp=[]
+        for a in self.operand:
+            #if the operand inside has less priority add brackets
+            if self.priority >= a.priority:
+                a='({})'.format(a)
+            else:
+                a='{}'.format(a)
+            temp.append(a)
+        return self.symbol.join( x for x in temp)
 
 class Add(Binary):
 
@@ -96,6 +109,9 @@ class Unary(Operator):
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
 
+    def __str__(self):
+        return self.symbol+'{}'.format(self.operand)
+
 class UAdd(Unary):
 
     symbol='+'
@@ -111,4 +127,5 @@ class USub(Unary):
 
     def __init__(self, operand):
         self.operand = operand
+
 
