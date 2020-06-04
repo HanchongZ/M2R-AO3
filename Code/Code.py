@@ -33,25 +33,25 @@ class Expression:
     def diff(self, var):
         if self == var:
             return Number('1')
-	else:
-	    return Number('0')
+        else:
+            return Number('0')
 
 class Terminal(Expression):
-    
+
     priority = 5
-    
+
     def __init__(self, operand):
         self.operand = operand
-        self.depth = 0 #initialize depth
+        self.level = 0 #initialize level
 
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = repr(self.operand))
-    
+
     def __str__(self):
         return '{a}'.format(a = self.operand)
 
 
-class Operator(Expression):    
+class Operator(Expression):
     pass
 
 class Symbol(Terminal):
@@ -79,19 +79,21 @@ class Add(Binary):
 
     def __init__(self, *operand):
         self.operand = operand
-        self.depth = max(a.depth for a in operand) + 1
+        self.level = max(a.level for a in operand) + 1
 
     def diff(self, var):
-	if not isinstance(self.operand[0], Number):
-	    a = visited['{h}'.format(h = repr(self.operand[0]))]
+	#if operand is not a number, find its derivative in visited
+        if not isinstance(self.operand[0], Number):
+            a = visited['{h}'.format(h = repr(self.operand[0]))]
         else:
-	    a = self.operand[0]
+            a = self.operand[0]
         if not isinstance(self.operand[1], Number):
             b = visited['{k}'.format(k = repr(self.operand[1]))]
         else:
             b = self.operand[1]
+	#add to visited if new term occurs
         if repr(a + b) not in visited:
-	    visited[repr(self.operand[0] + self.operand[1])] = a + b
+            visited[repr(self.operand[0] + self.operand[1])] = a + b
         return a + b
 
 class Sub(Binary):
@@ -150,29 +152,33 @@ class USub(Unary):
     def __init__(self, operand):
         self.operand = operand
 
-#initialize the dictionary visited
-visited = {}
+
 
 def derivative(e, var):
     #initialization
+    global visited
+    visited={}
     stack = [e]
 
     while stack != []:
         temp = stack.pop()
         if temp not in visited:
-
+	    #if it is an operator the value is key itself
             if type(temp) != Symbol and type(temp) != Number:
                 visited[repr(temp)] = temp
                 for a in range(len(temp.operand)):
                     stack.append(temp.operand[a])
+	    #if key is terminal, the value is its derivative
             else:
                 visited[repr(temp)] = Terminal.diff(temp, var)
-  
-    for a in range(e.depth):
+    #use a loop to update the derivatives
+    for a in range(e.level):
+	#use slice to avoid error for changing size in iteration
         temp = {k:visited[k] for k in dict.keys(visited)}
         keys = dict.keys(temp)
         for t in keys:
             if not isinstance(visited[t], Number):
                 visited[t] = visited[t].diff(var)
 
-    print(visited[repr(e)]) 
+    print(visited[repr(e)])
+    return visited[repr(e)]
