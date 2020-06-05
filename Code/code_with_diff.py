@@ -25,7 +25,7 @@ class Expression:
         return USub(self)
 
     def __repr__(self):
-        return '{a}({b})'.format(a = self.__class__.__name__, b = ','.join(repr(x) for x in self.operand))
+        return '{a}({b})'.format(a = self.__class__.__name__, b = ', '.join(repr(x) for x in self.operand))
 
 class Terminal(Expression):
 
