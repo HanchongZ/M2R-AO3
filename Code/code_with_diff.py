@@ -84,7 +84,7 @@ class Binary(Operator):
 
 class Add(Binary):
 
-    symbol = '+'
+    symbol = ' + '
     priority = 1
 
     def __init__(self, *operand):
@@ -95,7 +95,7 @@ class Add(Binary):
 
 class Sub(Binary):
 
-    symbol = '-'
+    symbol = ' - '
     priority = 1
 
     def __init__(self, *operand):
