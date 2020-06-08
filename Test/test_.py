@@ -6,7 +6,7 @@ This is a temporary script file.
 
 """
 
-from package import code_with_diff as Code
+from Code import code_with_diff as Code
 import sympy as sym
 import pytest 
 
