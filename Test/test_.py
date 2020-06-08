@@ -6,7 +6,10 @@ This is a temporary script file.
 
 """
 
-import code_with_diff as Code
+<<<<<<< HEAD
+import symbolic_system as Code
+=======
+>>>>>>> 8224661b051686d00caa0b7aef90e5af9d91caea
 import sympy as sym
 import pytest 
 
