@@ -6,20 +6,22 @@ This is a temporary script file.
 
 """
 
-from package import code_with_diff as Code
+import code_with_diff as Code
 import sympy as sym
 import pytest 
 
+x = Code.Symbol('x')
+y = Code.Symbol('y')
 
 @pytest.fixture
 def input_code():
-    input = Code.Symbol('x') + Code.Symbol('y')
+    input = x ** y 
     return input
 
 
 @pytest.fixture
 def input_sym():
-    input = sym.Symbol('x') + sym.Symbol('y')
+    input = sym.Symbol('x') ** sym.Symbol('y') 
     return input
 
 
@@ -33,8 +35,8 @@ def test_repr(input_sym, input_code):
 
 
 @pytest.mark.diff
-def test_diff(input_sym2, input_code2):
-    assert print(Code.derivative(input_code,Code.Symbol('x'))) == print(sym.diff(input_sym,sym.Symbol('x')))
+def test_diff(input_sym, input_code):
+    assert print(Code.derivative(input_code, x)) == print(sym.diff(input_sym, sym.Symbol('x')))
 
 
 
