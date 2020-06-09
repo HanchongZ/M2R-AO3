@@ -27,7 +27,6 @@ class Expression:
     def __repr__(self):
         return '{a}({b})'.format(a = self.__class__.__name__, b = ', '.join(repr(x) for x in self.operand))
 
-
 class Terminal(Expression):
 
     priority = 5
@@ -47,10 +46,8 @@ class Terminal(Expression):
         else:
             return Number(0)
 
-
 class Operator(Expression):
     pass
-
 
 class Symbol(Terminal):
 
@@ -61,7 +58,9 @@ class Symbol(Terminal):
         else:
             print('error')
 
-
+    def evaluation(self,eva):
+        return eva[self]
+    
 class Number(Terminal):
 
     #check if input is a number
@@ -70,7 +69,9 @@ class Number(Terminal):
             Terminal.__init__(self, operand)
         else:
             print('error')
-        
+
+    def evaluation(self,eva):
+        return self
 
 class Binary(Operator):
 
@@ -85,6 +86,8 @@ class Binary(Operator):
             temp.append(a)
         return self.symbol.join(x for x in temp)
 
+    def evaluation(self,eva):
+        return self.__class__(self.operand[0].evaluation(eva),self.operand[1].evaluation(eva))
 
 class Add(Binary):
 
@@ -96,7 +99,6 @@ class Add(Binary):
     
     def diff(self, doperand, var):
         return doperand[0] + doperand[1]
-
 
 class Sub(Binary):
 
@@ -121,7 +123,6 @@ class Mul(Binary):
     def diff(self, doperand, var):
         return doperand[0] * self.operand[1] + doperand[1] * self.operand[0] 
 
-
 class Div(Binary):
 
     symbol = '/'
@@ -132,7 +133,6 @@ class Div(Binary):
     
     def diff(self, doperand, var):
         return (doperand[0] * self.operand[1] - doperand[1] * self.operand[0]) / (self.operand[1] * self.operand[1])
-
 
 class Pow(Binary):
 
@@ -159,7 +159,9 @@ class Unary(Operator):
 
     def __str__(self):
         return self.symbol+'{}'.format(self.operand)
-    
+
+    def evaluation(self,eva):
+        return self.__class__(self.operand.evaluation(eva))
     
 class UAdd(Unary):
 
@@ -169,7 +171,6 @@ class UAdd(Unary):
     def diff(self, doperand, var):
         return doperand[0]    
 
-
 class USub(Unary):
 
     symbol = '-'
@@ -177,7 +178,6 @@ class USub(Unary):
     
     def diff(self, doperand, var):
         return - doperand[0]
-
 
 class Function(Operator):
 
@@ -192,6 +192,8 @@ class Function(Operator):
     def __str__(self):
         return self.symbol+'({})'.format(self.operand)
 
+    def evaluation(self,eva):
+        return self.__class__(self.operand.evaluation(eva))
 
 class Log(Function):
     
@@ -200,7 +202,6 @@ class Log(Function):
     def diff(self, doperand, var):
         return doperand[0] * Number(1) / self.operand
 
-
 class Sin(Function):
 
     symbol = 'sin'
@@ -208,14 +209,12 @@ class Sin(Function):
     def diff(self, doperand, var):
         return Cos(self.operand) * doperand[0]
 
-
 class Cos(Function):
 
     symbol = 'cos'
 
     def diff(self, doperand, var):
         return - Sin(self.operand) * doperand[0]
-
 
 def derivative(e, var):
 
@@ -268,5 +267,3 @@ def derivative(e, var):
             visited[repr(temp)] = temp.diff(doperand, var)
             
     return print(visited[repr(e)])
-
-
