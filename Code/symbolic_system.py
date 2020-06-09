@@ -59,7 +59,7 @@ class Symbol(Terminal):
             print('error')
 
     def evaluation(self,eva):
-        return eva[self]
+        return eva
     
 class Number(Terminal):
 
@@ -266,4 +266,5 @@ def derivative(e, var):
         else:
             visited[repr(temp)] = temp.diff(doperand, var)
             
-    return print(visited[repr(e)])
+    return visited[repr(e)]
+
