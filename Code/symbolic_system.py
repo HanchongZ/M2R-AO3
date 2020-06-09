@@ -198,7 +198,7 @@ class Log(Function):
     symbol = 'log'
     
     def diff(self, doperand, var):
-        return 1 / doperand[0]
+        return doperand[0] * Number(1) / self.operand
 
 
 class Sin(Function):
