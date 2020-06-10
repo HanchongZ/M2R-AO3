@@ -374,8 +374,3 @@ def post_visit(e, visit_fn):
             visited[repr(temp)] = visit_fn(doperand)
             
     return visited[repr(e)]
-
-
-
-x=Symbol('x')
-y=Symbol('y')
