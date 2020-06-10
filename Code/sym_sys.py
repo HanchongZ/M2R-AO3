@@ -322,7 +322,7 @@ def evalue(symbol,value):
     for a in range(len(symbol)):
         eva[repr(symbol[a])] = value[a]
     
-    print(eva)
+    return eva
     
 def evaluate(e,eva):
     
