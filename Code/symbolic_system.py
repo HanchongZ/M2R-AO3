@@ -215,8 +215,15 @@ class Cos(Function):
 
     def diff(self, doperand, var):
         return - Sin(self.operand) * doperand[0]
+    
+def derivative(e,var):
+    
+    def diff(doperand):
+        return e.diff(doperand,var)
+    
+    post_visit(e,diff)    
 
-def derivative(e, var):
+def post_visit(e, visit_fn):
 
     #initialize
     stack = [e]
@@ -244,7 +251,7 @@ def derivative(e, var):
                 stack += to_visit
             #if all operands is in visited, apply chain rule
             else:
-                visited[repr(temp)] = temp.diff(doperand, var)
+                visited[repr(temp)] = visit_fn(doperand)
 
         elif isinstance(temp, Unary) or isinstance(temp, Function):
             #if already visited, append derivatives onto doperand
@@ -260,11 +267,11 @@ def derivative(e, var):
                 stack += to_visit
             #if all operands is in visited, apply chain rule
             else:
-                visited[repr(temp)] = temp.diff(doperand, var) 
+                visited[repr(temp)] = visit_fn(doperand) 
 
         #if e is a terminal
         else:
-            visited[repr(temp)] = temp.diff(doperand, var)
+            visited[repr(temp)] = visit_fn(doperand)
             
     return visited[repr(e)]
 
