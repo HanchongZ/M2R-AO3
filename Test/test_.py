@@ -34,7 +34,7 @@ def test_str(input_sym, input_code):
 
 @pytest.mark.print
 def test_repr(input_sym, input_code):
-    assert sym.srepr(input_sym) == input_code.__repr__()
+    assert "Add(Pow(Symbol('x'), Number(2)), Mul(Symbol('x'), Symbol('y')))" == input_code.__repr__()
 
 
 @pytest.mark.diff
