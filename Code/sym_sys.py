@@ -371,7 +371,7 @@ def post_visit(e, visit_fn):
         
         if isinstance(temp, Operator):
             for o in temp.operand:
-                #if already visited, append derivatives onto doperand
+                #if already visited, append visited results onto doperand
                 if repr(o) in visited.keys():
                     doperand.append(visited[repr(o)])
                 #if not in visited, add to to_visit
@@ -382,7 +382,7 @@ def post_visit(e, visit_fn):
             if to_visit:
                 stack.append(temp)
                 stack += to_visit
-            #if all operands is in visited, apply chain rule
+            #if all operands is in visited, apply visitor_fn
             else:
                 visited[repr(temp)] = visit_fn(doperand)
 
