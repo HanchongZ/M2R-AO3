@@ -270,7 +270,13 @@ class USub(Unary):
     
     def evaluation(self, voperand, eva):
         return - voperand[0]
-
+    
+    def simple(self, voperand):
+        if isinstance(voperand[0],Number):
+            if voperand[0].operand[0]==0:
+                return voperand
+        else:
+            return self
     
 class Function(Operator):
 
