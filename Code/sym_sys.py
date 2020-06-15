@@ -41,13 +41,13 @@ class Terminal(Expression):
     def __str__(self):
         return '{a}'.format(a = self.operand[0])
         
-    def diff(self, doperand, var):
+    def diff(self, voperand, var):
         if self == var:
             return Number(1)
         else:
             return Number(0) 
         
-    def simple(self, doperand):
+    def simple(self, voperand):
         return self
 
     
@@ -58,9 +58,9 @@ class Symbol(Terminal):
         if type(operand) == str:
             Terminal.__init__(self, operand)
         else:
-            print('error')
+            raise TypeError
     
-    def evaluation(self, doperand, eva):
+    def evaluation(self, voperand, eva):
         num = eva[repr(self)]
         return num.operand[0]
 
@@ -72,9 +72,9 @@ class Number(Terminal):
         if type(operand) == int or type(operand) == float:
            Terminal.__init__(self, operand)
         else:
-            print('error')
+            raise TypeError
             
-    def evaluation(self, doperand, eva):
+    def evaluation(self, voperand, eva):
         return self.operand[0]   
 
     
@@ -104,21 +104,21 @@ class Add(Binary):
     def __init__(self, *operand):
         self.operand = operand
     
-    def diff(self, doperand, var):
-        return doperand[0] + doperand[1]
+    def diff(self, voperand, var):
+        return voperand[0] + voperand[1]
     
-    def evaluation(self, doperand, eva):
-        return doperand[0] + doperand[1]
+    def evaluation(self, voperand, eva):
+        return voperand[0] + voperand[1]
     
-    def simple(self, doperand):
-        if doperand[0].operand[0] == 0:
-            return doperand[1]
-        elif doperand[1].operand[0] == 0:
-            return doperand[0]
-        elif isinstance(doperand[0], Number) and isinstance(doperand[1], Number):
-            return Number(doperand[0].operand[0] + doperand[1].operand[0])
+    def simple(self, voperand):
+        if voperand[0].operand[0] == 0:
+            return voperand[1]
+        elif voperand[1].operand[0] == 0:
+            return voperand[0]
+        elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
+            return Number(voperand[0].operand[0] + voperand[1].operand[0])
         else:
-            return self.__class__(doperand[0], doperand[1])
+            return self.__class__(voperand[0], voperand[1])
     
 
 class Sub(Binary):
@@ -129,21 +129,21 @@ class Sub(Binary):
     def __init__(self, *operand):
         self.operand = operand
     
-    def diff(self, doperand, var):
-        return doperand[0] - doperand[1]  
+    def diff(self, voperand, var):
+        return voperand[0] - voperand[1]  
     
-    def evaluation(self, doperand, eva):
-        return doperand[0] - doperand[1]
+    def evaluation(self, voperand, eva):
+        return voperand[0] - voperand[1]
     
-    def simple(self, doperand):
-        if doperand[0].operand[0] == 0:
-            return - doperand[1]
-        elif doperand[1].operand[0] == 0:
-            return doperand[0]
-        elif isinstance(doperand[0], Number) and isinstance(doperand[1], Number):
-            return Number(doperand[0].operand[0] - doperand[1].operand[0])
+    def simple(self, voperand):
+        if voperand[0].operand[0] == 0:
+            return - voperand[1]
+        elif voperand[1].operand[0] == 0:
+            return voperand[0]
+        elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
+            return Number(voperand[0].operand[0] - voperand[1].operand[0])
         else:
-            return self.__class__(doperand[0], doperand[1])
+            return self.__class__(voperand[0], voperand[1])
 
         
 class Mul(Binary):
@@ -154,27 +154,27 @@ class Mul(Binary):
     def __init__(self, *operand):
         self.operand = operand
     
-    def diff(self, doperand, var):
-        return doperand[0] * self.operand[1] + doperand[1] * self.operand[0] 
+    def diff(self, voperand, var):
+        return voperand[0] * self.operand[1] + voperand[1] * self.operand[0] 
 
-    def evaluation(self, doperand, eva):
-        return doperand[0] * doperand[1]
+    def evaluation(self, voperand, eva):
+        return voperand[0] * voperand[1]
     
-    def simple(self, doperand):
-        if doperand[1].operand[0] == 1:
-            return doperand[0]
-        elif doperand[0].operand[0] == 1:
-            return doperand[1]
-        elif doperand[1].operand[0] == -1:
-            return - doperand[1]
-        elif doperand[0].operand[0] == -1:
-            return - doperand[1]
-        elif doperand[0].operand[0] == 0 or doperand[1].operand[0] == 0:
+    def simple(self, voperand):
+        if voperand[1].operand[0] == 1:
+            return voperand[0]
+        elif voperand[0].operand[0] == 1:
+            return voperand[1]
+        elif voperand[1].operand[0] == -1:
+            return - voperand[1]
+        elif voperand[0].operand[0] == -1:
+            return - voperand[1]
+        elif voperand[0].operand[0] == 0 or voperand[1].operand[0] == 0:
             return Number(0)
-        elif isinstance(doperand[0], Number) and isinstance(doperand[1], Number):
-            return Number(doperand[0].operand[0] * doperand[1].operand[0])
+        elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
+            return Number(voperand[0].operand[0] * voperand[1].operand[0])
         else:
-            return self.__class__(doperand[0], doperand[1])
+            return self.__class__(voperand[0], voperand[1])
         
         
 class Div(Binary):
@@ -185,25 +185,24 @@ class Div(Binary):
     def __init__(self, *operand):
         self.operand = operand
     
-    def diff(self, doperand, var):
-        return (doperand[0] * self.operand[1] - doperand[1] * self.operand[0]) / (self.operand[1] * self.operand[1])
+    def diff(self, voperand, var):
+        return (voperand[0] * self.operand[1] - voperand[1] * self.operand[0]) / (self.operand[1] * self.operand[1])
 
-    def evaluation(self, doperand, eva):
-        return doperand[0] / doperand[1]
+    def evaluation(self, voperand, eva):
+        return voperand[0] / voperand[1]
     
-    def simple(self, doperand):
-        if doperand[1].operand[0] == 1:
-            return doperand[0]
-        elif doperand[1].operand[0] == -1:
-            return - doperand[0]
-        elif doperand[1].operand[0] == 0:
-            print('error')
-        elif doperand[0].operand[0] == 0:
+    def simple(self, voperand):
+        if voperand[1].operand[0] == 1:
+            return voperand[0]
+        elif voperand[1].operand[0] == -1:
+            return - voperand[0]
+        elif voperand[1].operand[0] == 0:            raise ZeroDivisionError
+        elif voperand[0].operand[0] == 0:
             return Number(0)
-        elif isinstance(doperand[0], Number) and isinstance(doperand[1], Number):
-            return Number(doperand[0].operand[0] / doperand[1].operand[0])
+        elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
+            return Number(voperand[0].operand[0] / voperand[1].operand[0])
         else:
-            return self.__class__(doperand[0], doperand[1])
+            return self.__class__(voperand[0], voperand[1])
     
     
 class Pow(Binary):
@@ -214,26 +213,26 @@ class Pow(Binary):
     def __init__(self, *operand):
         self.operand = operand
     
-    def diff(self, doperand, var):
+    def diff(self, voperand, var):
         if isinstance(self.operand[1], Number):
-            return self.operand[1] * self.operand[0] ** (self.operand[1] - Number(1)) * doperand[0]
+            return self.operand[1] * self.operand[0] ** (self.operand[1] - Number(1)) * voperand[0]
         else:
-            return self * (doperand[1] * Log(self.operand[0]) + self.operand[1] * doperand[0] / self.operand[0])
+            return self * (voperand[1] * Log(self.operand[0]) + self.operand[1] * voperand[0] / self.operand[0])
         
-    def evaluation(self, doperand, eva):
-        return doperand[0] ** doperand[1]
+    def evaluation(self, voperand, eva):
+        return voperand[0] ** voperand[1]
     
-    def simple(self, doperand):
-        if doperand[1].operand[0] == 1:
-            return doperand[0]
-        elif doperand[1].operand[0] == 0 or doperand[0].operand[0] == 1:
+    def simple(self, voperand):
+        if voperand[1].operand[0] == 1:
+            return voperand[0]
+        elif voperand[1].operand[0] == 0 or voperand[0].operand[0] == 1:
             return Number(1)
-        elif doperand[0].operand[0] == 0:
+        elif voperand[0].operand[0] == 0:
             return Number(0)
-        elif isinstance(doperand[0], Number) and isinstance(doperand[1], Number):
-            return Number(doperand[0].operand[0] ** doperand[1].operand[0])
+        elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
+            return Number(voperand[0].operand[0] ** voperand[1].operand[0])
         else:
-            return self.__class__(doperand[0], doperand[1])
+            return self.__class__(voperand[0], voperand[1])
 
         
 class Unary(Operator):
@@ -245,8 +244,8 @@ class Unary(Operator):
     def __str__(self):
         return self.symbol + '{}'.format(self.operand[0])
     
-    def simple(self, doperand):
-        return self.__class__(doperand[0])
+    def simple(self, voperand):
+        return self.__class__(voperand[0])
     
     
 class UAdd(Unary):
@@ -254,11 +253,11 @@ class UAdd(Unary):
     symbol = '+'
     priority = 3
 
-    def diff(self, doperand, var):
-        return doperand[0]    
+    def diff(self, voperand, var):
+        return voperand[0]    
     
-    def evaluation(self, doperand, eva):
-        return + doperand[0]
+    def evaluation(self, voperand, eva):
+        return + voperand[0]
 
     
 class USub(Unary):
@@ -266,11 +265,11 @@ class USub(Unary):
     symbol = '-'
     priority = 3
     
-    def diff(self, doperand, var):
-        return - doperand[0]
+    def diff(self, voperand, var):
+        return - voperand[0]
     
-    def evaluation(self, doperand, eva):
-        return - doperand[0]
+    def evaluation(self, voperand, eva):
+        return - voperand[0]
 
     
 class Function(Operator):
@@ -284,47 +283,47 @@ class Function(Operator):
     def __str__(self):
         return self.symbol + '({})'.format(self.operand[0])
     
-    def simple(self, doperand):
-        return self.__class__(doperand[0])
+    def simple(self, voperand):
+        return self.__class__(voperand[0])
 
     
 class Log(Function):
     
     symbol = 'log'
     
-    def diff(self, doperand, var):
-        return doperand[0] * Number(1) / self.operand[0]
+    def diff(self, voperand, var):
+        return voperand[0] * Number(1) / self.operand[0]
     
-    def evaluation(self, doperand, eva):
-        return math.log(doperand[0])
+    def evaluation(self, voperand, eva):
+        return math.log(voperand[0])
 
 
 class Sin(Function):
 
     symbol = 'sin'
 
-    def diff(self, doperand, var):
-        return Cos(self.operand[0]) * doperand[0]
+    def diff(self, voperand, var):
+        return Cos(self.operand[0]) * voperand[0]
     
-    def evaluation(self, doperand, eva):
-        return math.sin(doperand[0])
+    def evaluation(self, voperand, eva):
+        return math.sin(voperand[0])
     
 
 class Cos(Function):
 
     symbol = 'cos'
 
-    def diff(self, doperand, var):
-        return - Sin(self.operand[0]) * doperand[0]
+    def diff(self, voperand, var):
+        return - Sin(self.operand[0]) * voperand[0]
     
-    def evaluation(self, doperand, eva):
-        return math.cos(doperand[0])
+    def evaluation(self, voperand, eva):
+        return math.cos(voperand[0])
     
     
 def derivative(e, var):
     
-    def diff(doperand):
-        return temp.diff(doperand, var)
+    def diff(voperand):
+        return temp.diff(voperand, var)
     
     return post_visit(e, diff)
 
@@ -341,16 +340,16 @@ def evalue(symbol, value):
     
 def evaluate(e, eva):
     
-    def evaluation(doperand):
-        return temp.evaluation(doperand, eva)
+    def evaluation(voperand):
+        return temp.evaluation(voperand, eva)
     
     return post_visit(e, evaluation)
 
 
 def simplify(e):
     
-    def simple(doperand):
-        return temp.simple(doperand)
+    def simple(voperand):
+        return temp.simple(voperand)
     
     return post_visit(e, simple)
         
@@ -367,13 +366,13 @@ def post_visit(e, visit_fn):
         #initialize
         temp = stack.pop()
         to_visit = []
-        doperand = []
+        voperand = []
         
         if isinstance(temp, Operator):
             for o in temp.operand:
-                #if already visited, append derivatives onto doperand
+                #if already visited, append visited results onto voperand
                 if repr(o) in visited.keys():
-                    doperand.append(visited[repr(o)])
+                    voperand.append(visited[repr(o)])
                 #if not in visited, add to to_visit
                 else:
                     to_visit.append(o)
@@ -382,12 +381,12 @@ def post_visit(e, visit_fn):
             if to_visit:
                 stack.append(temp)
                 stack += to_visit
-            #if all operands is in visited, apply chain rule
+            #if all operands is in visited, apply visitor_fn
             else:
-                visited[repr(temp)] = visit_fn(doperand)
+                visited[repr(temp)] = visit_fn(voperand)
 
         #if e is a terminal
         else:
-            visited[repr(temp)] = visit_fn(doperand)
+            visited[repr(temp)] = visit_fn(voperand)
             
     return visited[repr(e)]
