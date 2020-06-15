@@ -39,7 +39,7 @@ def test_repr(input_sym, input_code):
 
 @pytest.mark.diff
 def test_diff(input_sym, input_code):
-    assert print(s.simplify(s.derivative(input_code, x))) == print(sym.diff(input_sym, sym.Symbol('x')))
+    assert str(s.simplify(s.derivative(input_code, x))) == str(sym.diff(input_sym, sym.Symbol('x')))
 
 
 @pytest.mark.eval
