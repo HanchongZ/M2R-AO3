@@ -58,7 +58,7 @@ class Symbol(Terminal):
         if type(operand) == str:
             Terminal.__init__(self, operand)
         else:
-            print('error')
+            raise TypeError
     
     def evaluation(self, voperand, eva):
         num = eva[repr(self)]
@@ -72,7 +72,7 @@ class Number(Terminal):
         if type(operand) == int or type(operand) == float:
            Terminal.__init__(self, operand)
         else:
-            print('error')
+            raise TypeError
             
     def evaluation(self, voperand, eva):
         return self.operand[0]   
@@ -196,8 +196,7 @@ class Div(Binary):
             return voperand[0]
         elif voperand[1].operand[0] == -1:
             return - voperand[0]
-        elif voperand[1].operand[0] == 0:
-            print('error')
+        elif voperand[1].operand[0] == 0:            raise ZeroDivisionError
         elif voperand[0].operand[0] == 0:
             return Number(0)
         elif isinstance(voperand[0], Number) and isinstance(voperand[1], Number):
